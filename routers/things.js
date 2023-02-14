@@ -86,6 +86,17 @@ app.get('/add', async(req, res, next)=> {
   }
 });
 
+app.delete('/:id', async(req, res, next)=> {
+  try {
+    const thing = await Thing.findByPk(req.params.id);
+    await thing.destroy();
+    res.redirect('/things');
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
 app.get('/:id', async(req, res, next)=> {
   try {
     const thing = await Thing.findByPk(req.params.id, {
@@ -103,6 +114,9 @@ app.get('/:id', async(req, res, next)=> {
         <p>
           Owned by ${ thing.user ? thing.user.name : 'nobody'}
         </p>
+        <form method='POST' action='/things/${thing.id}?_method=delete'>
+          <button>x</button>
+        </form>
       </body>
     </html>
     `);
